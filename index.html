@@ -11,11 +11,18 @@
       src: url('digital-dismay.regular.woff') format('woff');
     }
 
+    @font-face {
+      font-family: 'Digital-7 Font Family';
+      font-style: normal;
+      font-weight: normal;
+      src: url('digital-7.regular.woff') format('woff');
+    }
+
     body,
     html {
+      position: relative;
       height: 100%;
       overflow: hidden;
-      cursor: pointer;
     }
 
     body {
@@ -23,12 +30,12 @@
       color: #d6b687;
       position: relative;
       animation: css-blur 5s ease forwards infinite;
-      font-size: 160px;
-      font-family: 'Digital Dismay Regular', sans-serif;
     }
 
     #countdown,
     #overlay {
+      font-size: 160px;
+      font-family: 'Digital Dismay Regular', sans-serif;
       display: none;
       position: absolute;
       top: calc(50% - 100px);
@@ -56,6 +63,18 @@
 
     #overlay {
       opacity: 0.1;
+    }
+
+    #menu {
+      margin: 0;
+      position: absolute;
+      right: 0;
+      bottom: 0;
+      list-style: none;
+      font-size: 40px;
+      font-family: 'Digital-7 Font Family', sans-serif;
+      cursor: pointer;
+      text-align: right;
     }
 
     @keyframes css-color {
@@ -98,14 +117,36 @@
 <div id="countdown"></div>
 <div id="overlay">88 88 88 88</div>
 
+<ul id="menu">
+  <li>DJO</li>
+  <li>MIKE</li>
+  <li>CHIGAYS</li>
+</ul>
+
+
 <script>
-  document.querySelector('body').addEventListener('click', () => {
+  const persons = {
+    'DJO': new Date('04/08/2022 17:00:00').getTime(),
+    'CHIGAYS': new Date('04/22/2022 17:00:00').getTime(),
+    'MIKE': new Date('05/13/2022 17:00:00').getTime(),
+  };
+
+  let interval;
+
+  document.querySelector('body').addEventListener('click', (e) => {
+    if (e.target.tagName !== 'LI') {
+      return false;
+    }
+
+    clearInterval(interval);
+
+    document.getElementById('audio').currentTime = 0;
     document.getElementById('audio').play();
 
     document.getElementById('countdown').style.display = 'block';
     document.getElementById('overlay').style.display = 'block';
 
-    const countdown = new Date('04/08/2022 18:00:00').getTime();
+    const countdown = persons[e.target.innerHTML];
 
     const timer = () => {
       const now = new Date().getTime();
@@ -121,12 +162,13 @@
       if (time < 0) {
         clearInterval(interval);
         document.getElementById('countdown').innerHTML = 'FREEDOM';
+        document.getElementById('audio').pause();
       }
     }
 
     timer();
 
-    const interval = setInterval(timer, 1000);
+    interval = setInterval(timer, 1000);
   });
 </script>
 </body>
