@@ -8,14 +8,14 @@
       font-family: 'Digital Dismay Regular';
       font-style: normal;
       font-weight: normal;
-      src: url('digital-dismay.regular.woff') format('woff');
+      src: url('fonts/digital-dismay.regular.woff') format('woff');
     }
 
     @font-face {
       font-family: 'Digital-7 Font Family';
       font-style: normal;
       font-weight: normal;
-      src: url('digital-7.regular.woff') format('woff');
+      src: url('fonts/digital-7.regular.woff') format('woff');
     }
 
     body,
@@ -30,6 +30,21 @@
       color: #d6b687;
       position: relative;
       animation: css-blur 5s ease forwards infinite;
+    }
+
+    .firefox:before {
+      content: ' ';
+      display: block;
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      opacity: 0.3;
+      background-image: url('gif/firework.gif');
+      background-repeat: no-repeat;
+      background-position: 50% 0;
+      background-size: cover;
     }
 
     #countdown,
@@ -68,8 +83,9 @@
     #menu {
       margin: 0;
       position: absolute;
-      right: 0;
-      bottom: 0;
+      z-index: 1;
+      right: 10px;
+      bottom: 20px;
       list-style: none;
       font-size: 40px;
       font-family: 'Digital-7 Font Family', sans-serif;
@@ -110,43 +126,104 @@
 </head>
 <body>
 
-<audio loop id="audio">
-  <source src="clock.mp3" type="audio/mp3">
+<audio loop id="clock">
+  <source src="mp3/clock.mp3" type="audio/mp3">
+</audio>
+
+<audio id="start">
+  <source src="mp3/okay.mp3" type="audio/mp3">
+</audio>
+
+<audio loop id="end">
+  <source src="mp3/sebastien.mp3" type="audio/mp3">
 </audio>
 
 <div id="countdown"></div>
 <div id="overlay">88 88 88 88</div>
 
 <ul id="menu">
-  <li>DJO</li>
-  <li>MIKE</li>
-  <li>CHIGAYS</li>
+  <li data-date="04/08/2022 17:00:00">DJO</li>
+  <li data-date="04/22/2022 17:00:00">MIKE</li>
+  <li data-date="05/13/2022 17:00:00">CHIGAYS</li>
 </ul>
 
-
 <script>
-  const persons = {
-    'DJO': new Date('04/08/2022 17:00:00').getTime(),
-    'CHIGAYS': new Date('04/22/2022 17:00:00').getTime(),
-    'MIKE': new Date('05/13/2022 17:00:00').getTime(),
-  };
+  const bruh = () => {
+    const rand = (max) => {
+      return Math.floor(Math.random() * max);
+    }
 
-  let interval;
+    const gif = [
+      'approve',
+      'batman',
+      'blowmind',
+      'dicaprio',
+      'dicaprio2',
+      'fine',
+      'hey',
+      'lol',
+      'love',
+      'ngnl',
+      'nicolas',
+      'nicolas2',
+      'nikoniko',
+      'ok',
+      'oui',
+      'pikachu',
+      'popopo',
+      'really',
+      'thomas',
+      'travolta',
+      'trololo',
+      'trololo2',
+      'what',
+    ];
 
-  document.querySelector('body').addEventListener('click', (e) => {
+    const duration = rand(5000) + 5000;
+
+    const img = document.createElement('img');
+    img.src = `gif/${gif[rand(gif.length)]}.gif`;
+    img.style.position = 'absolute';
+    img.style.opacity = '0';
+    img.style.top = `${rand(50)}%`;
+    img.style.left = `${rand(50)}%`;
+    img.style.width = `${rand(800) + 400}px`;
+    img.style.height = `${rand(600) + 300}px`;
+    img.style.transform = `rotate(${rand(2) ? rand(45) * -1 : rand(45)}deg)`;
+    img.animate([
+      { opacity: '0' },
+      { opacity: '0.5' },
+      { opacity: '0' }
+    ], {
+      duration,
+    });
+
+    document.body.append(img);
+
+    setTimeout(() => img.remove(), duration + 500);
+  }
+
+  let interval, loop;
+
+  document.body.addEventListener('click', (e) => {
     if (e.target.tagName !== 'LI') {
       return false;
     }
 
+    clearInterval(loop);
     clearInterval(interval);
 
-    document.getElementById('audio').currentTime = 0;
-    document.getElementById('audio').play();
+    document.body.classList.remove('firefox');
+
+    document.getElementById('clock').currentTime = 0;
+    document.getElementById('clock').play();
+    document.getElementById('end').pause();
+    document.getElementById('start').pause();
 
     document.getElementById('countdown').style.display = 'block';
     document.getElementById('overlay').style.display = 'block';
 
-    const countdown = persons[e.target.innerHTML];
+    const countdown = new Date(e.target.dataset.date);
 
     const timer = () => {
       const now = new Date().getTime();
@@ -161,12 +238,26 @@
 
       if (time < 0) {
         clearInterval(interval);
-        document.getElementById('countdown').innerHTML = 'FREEDOM';
-        document.getElementById('audio').pause();
+        clearInterval(loop);
+
+        document.body.classList.add('firefox');
+
+        document.getElementById('clock').pause();
+        document.getElementById('end').pause();
+        document.getElementById('start').currentTime = 0;
+        document.getElementById('start').play();
+
+        setTimeout(() => {
+          document.getElementById('start').pause();
+          document.getElementById('end').currentTime = 0;
+          document.getElementById('end').play();
+        }, 3000);
+
+        document.getElementById('countdown').innerHTML = '00 00 00 00';
+
+        loop = setInterval(bruh, 2500);
       }
     }
-
-    timer();
 
     interval = setInterval(timer, 1000);
   });
