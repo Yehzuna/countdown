@@ -32,7 +32,7 @@
       animation: css-blur 5s ease forwards infinite;
     }
 
-    .firefox:before {
+    .fireworks:before {
       content: ' ';
       display: block;
       position: absolute;
@@ -147,6 +147,7 @@
   <li data-date="2022-06-10 17:00:00">DARONNED</li>
   <li data-date="2022-06-10 17:00:00">KEVIO</li>
   <li data-date="2022-06-10 17:00:00">WITO</li>
+  <li data-date="2022-07-22 17:00:00">CYP</li>
 </ul>
 
 <script>
@@ -205,7 +206,7 @@
     setTimeout(() => img.remove(), duration + 500);
   }
 
-  let interval, loop;
+  let interval, loop, start;
 
   document.body.addEventListener('click', (e) => {
     if (e.target.tagName !== 'LI') {
@@ -214,8 +215,9 @@
 
     clearInterval(loop);
     clearInterval(interval);
+    clearInterval(start);
 
-    document.body.classList.remove('firefox');
+    document.body.classList.remove('fireworks');
 
     document.getElementById('clock').currentTime = 0;
     document.getElementById('clock').play();
@@ -241,15 +243,16 @@
       if (time < 0) {
         clearInterval(interval);
         clearInterval(loop);
+        clearInterval(start);
 
-        document.body.classList.add('firefox');
+        document.body.classList.add('fireworks');
 
         document.getElementById('clock').pause();
         document.getElementById('end').pause();
         document.getElementById('start').currentTime = 0;
         document.getElementById('start').play();
 
-        setTimeout(() => {
+        start = setTimeout(() => {
           document.getElementById('start').pause();
           document.getElementById('end').currentTime = 0;
           document.getElementById('end').play();

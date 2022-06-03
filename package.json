@@ -1,0 +1,19 @@
+{
+  "name": "countdown",
+  "version": "1.0.0",
+  "description": "",
+  "main": "public/index.html",
+  "scripts": {
+    "login": "firebase login",
+    "deploy": "firebase deploy"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:Yehzuna/countdown.git"
+  },
+  "author": "yehzuna@outlook.com",
+  "license": "ISC",
+  "devDependencies": {
+    "firebase-tools": "^11.0.1"
+  }
+}
